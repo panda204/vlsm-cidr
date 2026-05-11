@@ -332,9 +332,11 @@
             overflow: hidden; text-overflow: ellipsis;
             width: 100%; text-align: center;
         }
-        .cell-info .lbl { font-size: clamp(5px, 5.5cqw, 10px); opacity: 0.45; letter-spacing: 0.08em; margin-top: 3%; }
-        .cell-info .val { font-size: clamp(6px, 7cqw, 13px); opacity: 0.9; }
-        .cell-info .dim { font-size: clamp(5px, 5.5cqw, 10px); opacity: 0.4; margin-top: 3%; }
+        
+        /* Updated VLSM Grid Text Scaling */
+        .cell-info .lbl { font-size: clamp(7px, 7cqw, 12px); opacity: 0.6; letter-spacing: 0.08em; margin-top: 3%; }
+        .cell-info .val { font-size: clamp(9px, 9.5cqw, 16px); opacity: 1; font-weight: bold; }
+        .cell-info .dim { font-size: clamp(7px, 7cqw, 12px); opacity: 0.6; margin-top: 3%; }
 
         @keyframes splitIn {
             from { opacity: 0; transform: scale(0.84); }
@@ -451,8 +453,10 @@
             text-shadow: 0 0 14px var(--green), 0 0 28px rgba(45,255,179,0.3);
             letter-spacing: 0.05em;
         }
-        .mask-hosts { margin-top: 8px; font-size: 0.73rem; color: var(--muted); }
-        .mask-hosts strong { color: var(--text); }
+        
+        /* Updated CIDR Host Text Scaling */
+        .mask-hosts { margin-top: 12px; font-size: 1.1rem; color: var(--muted); }
+        .mask-hosts strong { color: var(--text); font-size: 1.25rem; font-weight: 900; }
 
         /* ── Toast ──────────────────────────────────────────────────────── */
         #toast {

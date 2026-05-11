@@ -228,7 +228,7 @@
         .btn-red:hover { background: rgba(255,58,110,0.1); box-shadow: 0 0 16px rgba(255,58,110,0.5); }
 
         /* octet inputs */
-        .net-row { display: flex; gap: 5px; align-items: center; }
+        .net-row { display: flex; gap: 5px; align-items: center; justify-content: center; }
         .net-input {
             font-family: 'Share Tech Mono', monospace;
             font-size: 0.9rem;
@@ -246,25 +246,26 @@
         .net-input.error { border-color: var(--hot); box-shadow: 0 0 10px rgba(255,58,110,0.3); }
         .net-sep { color: var(--muted); font-size: 1.1rem; padding: 0 1px; }
 
-        /* Info badge strip */
+        /* Info badge strip (Upgraded visibility) */
         .info-strip {
-            background: var(--surface);
+            background: var(--surface2);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 16px;
-            margin-bottom: 12px;
-            display: flex; flex-wrap: wrap; gap: 16px;
-            align-items: center;
-            font-size: 0.72rem;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            display: flex; flex-wrap: wrap; gap: 24px;
+            align-items: center; justify-content: center;
+            font-size: 0.9rem;
             color: var(--muted);
+            box-shadow: 0 0 15px rgba(0,229,255,0.05);
         }
         .info-strip .addr {
             font-family: 'Orbitron', monospace;
-            font-size: 1rem; font-weight: 700;
+            font-size: 1.8rem; font-weight: 700;
             color: var(--accent);
             text-shadow: 0 0 10px rgba(0,229,255,0.5);
         }
-        .info-strip .detail span { color: var(--text); }
+        .info-strip .detail span { color: var(--text); font-size: 1.05rem; font-weight: bold; }
 
         /* Legend */
         .legend {
@@ -376,11 +377,6 @@
         .strip-bit.hot-off { background: rgba(255,58,110,0.06); color: rgba(255,58,110,0.4); }
         .strip-sep { width: 2px; height: 28px; background: var(--border); flex-shrink: 0; border-radius: 1px; margin: 0 3px; }
 
-        @media (max-width: 520px) {
-            .bits-strip { gap: 2px; }
-            .strip-bit { width: 15px; height: 22px; font-size: 0.6rem; }
-        }
-
         /* Octet cards */
         .octets-grid {
             display: grid;
@@ -388,7 +384,6 @@
             gap: 12px;
             margin-bottom: 14px;
         }
-        @media (max-width: 580px) { .octets-grid { grid-template-columns: 1fr 1fr; } }
 
         .octet-card {
             background: var(--surface2); border: 1px solid var(--border);
@@ -470,18 +465,32 @@
             white-space: nowrap;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── Mobile Queries ─────────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            .flex-row { flex-direction: column; align-items: stretch; gap: 12px; }
+            .btn-group { justify-content: center; margin-top: 8px; }
+            .info-strip { flex-direction: column; gap: 10px; text-align: center; }
+            .info-strip .addr { font-size: 1.5rem; }
+            .octets-grid { grid-template-columns: 1fr 1fr; }
+            .bits-strip-wrapper { overflow-x: auto; padding: 16px 8px; }
+            .bits-strip { justify-content: flex-start; padding-bottom: 4px; }
+            .strip-bit { width: 16px; height: 24px; font-size: 0.65rem; }
+        }
+        
+        @media (max-width: 400px) {
+            .octets-grid { grid-template-columns: 1fr; } /* Stack vertically on tiny screens */
+        }
     </style>
 </head>
 <body>
 <div class="wrapper">
 
-    <!-- ── Site header ──────────────────────────────────────────────────── -->
     <div class="site-header">
         <div class="site-title">SUBNET TOOLKIT</div>
         <div class="site-sub">VLSM BOX VISUALIZER &nbsp;·&nbsp; CIDR SUBNET MASK REFERENCE</div>
     </div>
 
-    <!-- ── Tab nav ──────────────────────────────────────────────────────── -->
     <div class="tab-nav">
         <button class="tab-btn active" data-tab="vlsm">
             ▦ &nbsp;VLSM BOX METHOD
@@ -492,14 +501,10 @@
         </button>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════
-         TAB 1 — VLSM BOX VISUALIZER
-    ════════════════════════════════════════════════════════════════════ -->
     <div class="tab-panel active" id="panel-vlsm">
 
         <div class="panel-section">
             <div class="flex-row">
-                <!-- Network IP input -->
                 <div>
                     <span class="ctrl-label">Network Address</span>
                     <div class="net-row">
@@ -513,7 +518,6 @@
                     </div>
                 </div>
 
-                <!-- Prefix slider -->
                 <div class="grow">
                     <div class="slider-header">
                         <span class="ctrl-label">Starting Prefix</span>
@@ -529,7 +533,6 @@
                     </div>
                 </div>
 
-                <!-- Buttons -->
                 <div class="btn-group">
                     <button class="btn btn-cyan" id="vlsmApplyBtn">APPLY</button>
                     <button class="btn btn-red"  id="vlsmResetBtn">RESET</button>
@@ -537,7 +540,6 @@
             </div>
         </div>
 
-        <!-- Active network badge -->
         <div class="info-strip">
             <div class="addr" id="vlsmBadgeAddr">10.0.0.0/24</div>
             <div class="detail">TOTAL IPs: <span id="vlsmBadgeTotal">256</span></div>
@@ -555,12 +557,8 @@
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════════════════════════════
-         TAB 2 — CIDR SUBNET MASK
-    ════════════════════════════════════════════════════════════════════ -->
     <div class="tab-panel" id="panel-cidr">
 
-        <!-- Slider -->
         <div class="panel-section">
             <div class="flex-row" style="align-items:center;">
                 <span class="ctrl-label" style="margin:0;white-space:nowrap;">PREFIX LENGTH</span>
@@ -578,26 +576,20 @@
             </div>
         </div>
 
-        <!-- 32-bit strip -->
         <div class="bits-strip-wrapper">
             <div class="strip-sublabel">32-BIT MASK REPRESENTATION</div>
             <div class="bits-strip" id="bitsStrip"></div>
         </div>
 
-        <!-- Octet cards -->
         <div class="octets-grid" id="octetsGrid"></div>
 
-        <!-- Final mask -->
         <div class="mask-display">
             <div class="mask-label">SUBNET MASK</div>
             <div class="mask-value" id="maskValue">255.255.255.0</div>
             <div class="mask-hosts" id="maskHosts"></div>
         </div>
 
-    </div><!-- /panel-cidr -->
-
-</div><!-- /wrapper -->
-<div id="toast"></div>
+    </div></div><div id="toast"></div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -611,11 +603,10 @@ function ipToInt(a,b,c,d) { return ((a<<24)|(b<<16)|(c<<8)|d)>>>0; }
 function intToIp(n) { return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.'); }
 function maskFromPrefix(p) { return p===0 ? 0 : (0xFFFFFFFF<<(32-p))>>>0; }
 function subnetMaskStr(p) { return intToIp(maskFromPrefix(p)); }
+
+// Replaced abbreviation formatting logic with exact formatted counts
 function formatCount(n) {
-    if(n>=1e9) return (n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B';
-    if(n>=1e6) return (n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';
-    if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.?0+$/,'')+'K';
-    return n;
+    return n.toLocaleString('en-US');
 }
 
 /* Toast */
@@ -857,13 +848,12 @@ window.addEventListener('resize',()=>{ if(document.getElementById('panel-vlsm').
 ═══════════════════════════════════════════════════════════════════════════ */
 const BIT_VALUES = [128,64,32,16,8,4,2,1];
 
+// Modified exact logic
 function cidrFormatHosts(cidr) {
     if(cidr===32) return '1 host (single IP)';
     if(cidr===31) return '2 hosts (point-to-point)';
-    const h=Math.pow(2,32-cidr)-2;
-    if(h>=1e6) return `${(h/1e6).toFixed(2)}M usable hosts`;
-    if(h>=1e3) return `${(h/1e3).toFixed(1)}K usable hosts`;
-    return `${h} usable hosts`;
+    const h = Math.pow(2,32-cidr)-2;
+    return `${h.toLocaleString('en-US')} usable hosts`;
 }
 
 function cidrUpdate() {

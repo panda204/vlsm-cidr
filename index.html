@@ -285,7 +285,7 @@
         .chip strong { color: var(--text); font-weight: normal; }
 
         /* ═══════════════════════════════════════════════════════════════════
-           VLSM CANVAS (Refactored to nested Flexbox)
+           VLSM CANVAS
         ═══════════════════════════════════════════════════════════════════ */
         #vlsmCanvas {
             width: 100%; aspect-ratio: 1 / 1;
@@ -294,8 +294,7 @@
             box-shadow: 0 0 40px rgba(0,160,255,0.07);
             border-radius: 6px;
             overflow: hidden;
-            display: flex; 
-            flex-direction: column;
+            display: grid;
             position: relative;
         }
 
@@ -305,9 +304,7 @@
             align-items: center; justify-content: center;
             cursor: crosshair;
             transition: background 0.15s, box-shadow 0.15s;
-            flex: 1; /* Guarantees strict percentage bounds within flex */
-            min-width: 0; 
-            min-height: 0;
+            container-type: size;
         }
         .cell:hover .split-hint { opacity: 0.5; }
         .split-hint {
@@ -328,9 +325,9 @@
         .cell-cidr {
             font-family: 'Orbitron', monospace;
             font-weight: 900; line-height: 1;
-            font-size: 3.2em;
-            margin-bottom: 2%;
+            font-size: clamp(10px, 25cqw, 120px); /* Larger CIDR, scales flawlessly with JS base font */
             white-space: nowrap; text-align: center; width: 100%;
+            margin-bottom: 2%;
         }
         .cell-info { width: 100%; text-align: center; margin-top: 2%; }
         .cell-info .row {
@@ -340,9 +337,9 @@
             line-height: 1.1; 
         }
         
-        .cell-info .lbl { font-size: 0.7em; opacity: 0.6; letter-spacing: 0.08em; margin-top: 2%; }
-        .cell-info .val { font-size: 1.1em; opacity: 1; font-weight: bold; margin-bottom: 1%; }
-        .cell-info .dim { font-size: 0.65em; opacity: 0.6; margin-top: 4%; }
+        .cell-info .lbl { font-size: clamp(7px, 6cqw, 20px); opacity: 0.6; letter-spacing: 0.08em; margin-top: 2%; }
+        .cell-info .val { font-size: clamp(8px, 9cqw, 32px); opacity: 1; font-weight: bold; margin-bottom: 1%; }
+        .cell-info .dim { font-size: clamp(7px, 5cqw, 20px); opacity: 0.6; margin-top: 3%; }
 
         @keyframes splitIn {
             from { opacity: 0; transform: scale(0.84); }
@@ -682,46 +679,52 @@ function vlsmLeaves(node, out=[]) {
     vlsmLeaves(node.split.left,out); vlsmLeaves(node.split.right,out); return out;
 }
 
+function vlsmComputeGrid(node) {
+    if(!node.split) return {cols:1,rows:1,areas:[[node.id]]};
+    const L=vlsmComputeGrid(node.split.left), R=vlsmComputeGrid(node.split.right);
+    if(node.split.dir==='v') {
+        const rows=Math.max(L.rows,R.rows);
+        const La=vlsmStretchRows(L.areas,rows), Ra=vlsmStretchRows(R.areas,rows);
+        return {cols:L.cols+R.cols,rows,areas:La.map((row,i)=>[...row,...Ra[i]])};
+    } else {
+        const cols=Math.max(L.cols,R.cols);
+        const La=vlsmStretchCols(L.areas,cols), Ra=vlsmStretchCols(R.areas,cols);
+        return {cols,rows:L.rows+R.rows,areas:[...La,...Ra]};
+    }
+}
+function vlsmStretchRows(a,t){const r=a.map(row=>[...row]);while(r.length<t)r.push([...r[r.length-1]]);return r;}
+function vlsmStretchCols(a,t){return a.map(row=>{const r=[...row];while(r.length<t)r.push(r[r.length-1]);return r;});}
+
 const vlsmCanvas = document.getElementById('vlsmCanvas');
 
-// Rewritten engine to build a mathematically perfect flex tree
-function renderNode(node, animIds) {
-    const el = document.createElement('div');
-    el.style.flex = '1';
-    el.style.display = 'flex';
-    el.style.minWidth = '0';
-    el.style.minHeight = '0';
+function vlsmRender(animIds=[]) {
+    const grid = vlsmComputeGrid(vlsmTree);
+    vlsmCanvas.style.gridTemplateColumns = `repeat(${grid.cols}, 1fr)`;
+    vlsmCanvas.style.gridTemplateRows    = `repeat(${grid.rows}, 1fr)`;
+    vlsmCanvas.style.gridTemplateAreas  = grid.areas.map(r=>`"${r.join(' ')}"`).join(' ');
+    vlsmCanvas.innerHTML = '';
 
-    if (node.split) {
-        // Horizonal split (dir h) makes lines that stack nodes top/bottom => column
-        // Vertical split (dir v) makes lines that place nodes left/right => row
-        el.style.flexDirection = node.split.dir === 'v' ? 'row' : 'column';
-        el.appendChild(renderNode(node.split.left, animIds));
-        el.appendChild(renderNode(node.split.right, animIds));
-    } else {
+    vlsmLeaves(vlsmTree).forEach(node => {
+        const color = VLSM_COLORS[Math.min(node.prefix, VLSM_COLORS.length-1)];
+        const info  = blockInfo(node.ipInt, node.prefix);
         const isNew = animIds.includes(node.id);
-        el.className = 'cell' + (isNew ? ' new' : '');
-        const color = VLSM_COLORS[Math.min(node.prefix, VLSM_COLORS.length - 1)];
-        const info = blockInfo(node.ipInt, node.prefix);
 
-        el.style.backgroundColor = hexToRgba(color, 0.06);
-        el.style.border = `1px solid ${hexToRgba(color, 0.28)}`;
+        const cell = document.createElement('div');
+        cell.className = 'cell'+(isNew?' new':'');
+        cell.style.gridArea        = node.id;
+        cell.style.backgroundColor = hexToRgba(color,0.06);
+        cell.style.border          = `1px solid ${hexToRgba(color,0.28)}`;
 
-        el.addEventListener('mouseenter', () => { el.style.backgroundColor = hexToRgba(color, 0.13); el.style.boxShadow = `inset 0 0 28px ${hexToRgba(color, 0.18)}`; });
-        el.addEventListener('mouseleave', () => { el.style.backgroundColor = hexToRgba(color, 0.06); el.style.boxShadow = 'none'; });
-
-        // Mathematically scales the base font size proportional to the side length of the box
-        const depth = node.prefix - vlsmStartPrefix;
-        const scale = Math.pow(0.5, depth / 2); 
-        el.style.fontSize = `clamp(3px, ${scale * 2.5}vw, ${scale * 24}px)`;
+        cell.addEventListener('mouseenter',()=>{ cell.style.backgroundColor=hexToRgba(color,0.13); cell.style.boxShadow=`inset 0 0 28px ${hexToRgba(color,0.18)}`; });
+        cell.addEventListener('mouseleave',()=>{ cell.style.backgroundColor=hexToRgba(color,0.06); cell.style.boxShadow='none'; });
 
         const inner = document.createElement('div');
         inner.className = 'cell-inner';
 
         const cidrEl = document.createElement('div');
-        cidrEl.className = 'cell-cidr';
+        cidrEl.className   = 'cell-cidr';
         cidrEl.style.color = color;
-        cidrEl.style.textShadow = `0 0 16px ${hexToRgba(color, 0.7)}`;
+        cidrEl.style.textShadow = `0 0 16px ${hexToRgba(color,0.7)}`;
         cidrEl.textContent = `/${node.prefix}`;
         inner.appendChild(cidrEl);
 
@@ -738,31 +741,23 @@ function renderNode(node, animIds) {
         inner.appendChild(infoEl);
 
         const hint = document.createElement('div');
-        hint.className = 'split-hint';
-        hint.style.color = color;
-        hint.textContent = 'SPLIT ÷';
-        
-        el.appendChild(hint);
-        el.appendChild(inner);
+        hint.className='split-hint'; hint.style.color=color; hint.textContent='SPLIT ÷';
+        cell.appendChild(hint);
+        cell.appendChild(inner);
 
-        el.addEventListener('click', () => {
-            if (node.prefix >= 30) { showToast('⚠  /30 is the minimum — only 4 IPs (2 usable)'); return; }
-            const splitDepth = node.prefix - vlsmStartPrefix;
-            const dir = splitDepth % 2 === 0 ? 'h' : 'v';
-            const cp = node.prefix + 1;
-            const cs = Math.pow(2, 32 - cp);
-            node.split = { dir, left: vlsmMakeNode(cp, node.ipInt), right: vlsmMakeNode(cp, (node.ipInt + cs) >>> 0) };
+        cell.addEventListener('click',()=>{
+            if(node.prefix>=30){showToast('⚠  /30 is the minimum — only 4 IPs (2 usable)');return;}
+            const splitDepth=node.prefix-vlsmStartPrefix;
+            const dir=splitDepth%2===0?'h':'v';
+            const cp=node.prefix+1;
+            const cs=Math.pow(2,32-cp);
+            node.split={dir, left:vlsmMakeNode(cp,node.ipInt), right:vlsmMakeNode(cp,(node.ipInt+cs)>>>0)};
             vlsmSplitCount++;
-            vlsmRender([node.split.left.id, node.split.right.id]);
+            vlsmRender([node.split.left.id,node.split.right.id]);
         });
-    }
-    return el;
-}
 
-function vlsmRender(animIds=[]) {
-    vlsmCanvas.innerHTML = '';
-    const rootEl = renderNode(vlsmTree, animIds);
-    vlsmCanvas.appendChild(rootEl);
+        vlsmCanvas.appendChild(cell);
+    });
 
     document.getElementById('vlsmSplitCount').textContent  = vlsmSplitCount;
     document.getElementById('vlsmSubnetCount').textContent = vlsmLeaves(vlsmTree).length;

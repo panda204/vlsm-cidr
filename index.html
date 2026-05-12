@@ -164,16 +164,9 @@
 
         /* ══════════════════════════════════════════════════════════════════
            VLSM CANVAS
-           ─────────────────────────────────────────────────────────────────
-           The outer wrapper is a square that NEVER changes.
-           All cells are absolutely positioned inside it using percentage
-           coordinates derived from the split tree — exactly like cutting
-           a pie. Nothing ever resizes the outer box.
         ══════════════════════════════════════════════════════════════════ */
         #vlsmCanvasWrap {
             width: 100%;
-            /* Force a perfect square using the padding-top trick —
-               completely immune to content changes inside */
             padding-top: 100%;
             position: relative;
             border: 2px solid var(--border);
@@ -184,15 +177,13 @@
             touch-action: manipulation;
         }
 
-        /* The inner div fills the wrapper absolutely — this is the actual drawing surface */
         #vlsmCanvas {
             position: absolute;
-            inset: 0;              /* top:0 right:0 bottom:0 left:0 */
+            inset: 0;
             width: 100%;
             height: 100%;
         }
 
-        /* Every cell is absolutely positioned with %, computed by JS */
         .cell {
             position: absolute;
             display: flex;
@@ -211,6 +202,7 @@
             font-size: 9px; font-family: 'Share Tech Mono', monospace;
             opacity: 0; transition: opacity 0.2s;
             pointer-events: none; white-space: nowrap; letter-spacing: 0.04em;
+            z-index: 5;
         }
         .cell:hover .split-hint { opacity: 0.55; }
 
@@ -218,33 +210,38 @@
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            padding: 6%; pointer-events: none; overflow: hidden; text-align: center;
+            padding: 4%; pointer-events: none; overflow: hidden; text-align: center;
+            z-index: 1;
         }
 
-        /* Font sizes set by JS after measure */
+        /* Absolutely positioned in top right corner */
         .cell-cidr {
+            position: absolute;
+            top: 4%;
+            right: 4%;
             font-family: 'Orbitron', monospace;
-            font-weight: 900; line-height: 1; white-space: nowrap;
+            font-weight: 900; 
+            line-height: 1; 
+            white-space: nowrap;
+            z-index: 2;
         }
-        .cell-sep {
-            width: 55%; height: 1px; opacity: 0.2;
-            background: currentColor; margin: 6% auto; flex-shrink: 0;
-        }
+
         .cell-info {
-            width: 100%; display: flex; flex-direction: column;
-            align-items: center; gap: 0;
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 0;
         }
         .cell-info .lbl {
-            opacity: 0.45; letter-spacing: 0.07em;
-            margin-top: 0.3em; line-height: 1; white-space: nowrap;
+            opacity: 0.55; letter-spacing: 0.07em;
+            margin-top: 0.4em; line-height: 1; white-space: nowrap;
         }
         .cell-info .val {
-            opacity: 0.95; font-weight: bold; line-height: 1.1;
+            opacity: 1; font-weight: bold; line-height: 1.1;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             width: 100%; text-align: center;
         }
         .cell-info .dim {
-            opacity: 0.4; margin-top: 0.5em;
+            opacity: 0.4; margin-top: 0.6em;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             width: 100%; text-align: center;
         }
@@ -370,7 +367,6 @@
         <button class="tab-btn" data-tab="cidr">⬛ CIDR → SUBNET MASK</button>
     </div>
 
-    <!-- ══ VLSM ══ -->
     <div class="tab-panel active" id="panel-vlsm">
         <div class="panel-section">
             <div class="flex-row">
@@ -413,7 +409,6 @@
 
         <div class="legend" id="vlsmLegend"></div>
 
-        <!-- Outer wrapper: padding-top:100% trick locks it as a perfect square forever -->
         <div id="vlsmCanvasWrap">
             <div id="vlsmCanvas"></div>
         </div>
@@ -425,7 +420,6 @@
         </div>
     </div>
 
-    <!-- ══ CIDR ══ -->
     <div class="tab-panel" id="panel-cidr">
         <div class="panel-section">
             <div class="cidr-slider-row">
@@ -523,41 +517,33 @@ function leaves(node,out=[]){
     leaves(node.split.left,out); leaves(node.split.right,out); return out;
 }
 
-/* ── Layout: walk tree → flat list of {node, x,y,w,h} in 0–1 fractions ── 
-   Each split cuts the current rectangle either horizontally (top/bottom)
-   or vertically (left/right). Results are pure percentages — the outer
-   box size is NEVER involved in this calculation.
-*/
+/* ── Layout ── */
 function computeRects(node, x,y,w,h, depth, out){
     if(!node.split){
         out.push({node, x,y,w,h});
         return;
     }
-    // Alternate cut direction by depth: even=horizontal(top/bottom), odd=vertical(left/right)
     if(node.split.dir==='h'){
-        // horizontal cut → stack top/bottom
         computeRects(node.split.left,  x, y,       w, h/2, depth+1, out);
         computeRects(node.split.right, x, y+h/2,   w, h/2, depth+1, out);
     } else {
-        // vertical cut → side by side
         computeRects(node.split.left,  x,     y, w/2, h, depth+1, out);
         computeRects(node.split.right, x+w/2, y, w/2, h, depth+1, out);
     }
 }
 
-/* ── Font scaling: given cell pixel size, return ideal font sizes ───────── */
+/* ── Adjusted Font scaling logic favoring Network Info over CIDR ───────── */
 function fontSizes(wPx, hPx){
     const s = Math.min(wPx, hPx);
     return {
-        cidr:    Math.max(9,  Math.min(s * 0.26, 72)),
-        info:    Math.max(6,  Math.min(s * 0.082, 15)),
-        lbl:     Math.max(5,  Math.min(s * 0.062, 11)),
-        showInfo: s >= 50,
-        showLbls: s >= 88
+        cidr:    Math.max(10, Math.min(s * 0.16, 36)), // Smaller, corner badge
+        info:    Math.max(8,  Math.min(s * 0.14, 26)), // Larger main values
+        lbl:     Math.max(5,  Math.min(s * 0.07, 12)), // Larger labels
+        showInfo: s >= 45,
+        showLbls: s >= 70
     };
 }
 
-/* ── ResizeObserver to re-scale fonts when window/orientation changes ───── */
 let cellRO = null;
 
 function scaleAllCells(){
@@ -567,11 +553,10 @@ function scaleAllCells(){
         const f=fontSizes(w,h);
         const cidrEl=cell.querySelector('.cell-cidr');
         const infoEl=cell.querySelector('.cell-info');
-        const sepEl =cell.querySelector('.cell-sep');
+        
         if(cidrEl) cidrEl.style.fontSize=f.cidr+'px';
         if(infoEl){
             infoEl.style.display=f.showInfo?'flex':'none';
-            if(sepEl) sepEl.style.display=f.showInfo?'block':'none';
             if(f.showInfo){
                 infoEl.style.fontSize=f.info+'px';
                 infoEl.querySelectorAll('.lbl').forEach(el=>{
@@ -593,7 +578,6 @@ function vlsmRender(animIds=[]){
 
     vlsmCanvas.innerHTML='';
 
-    // Compute all leaf rectangles as 0–1 fractions
     const rects=[];
     computeRects(vlsmTree, 0,0,1,1, 0, rects);
 
@@ -605,7 +589,6 @@ function vlsmRender(animIds=[]){
         const cell=document.createElement('div');
         cell.className='cell'+(isNew?' new':'');
 
-        // Position using percentages — completely independent of outer box px size
         cell.style.left  =(x*100)+'%';
         cell.style.top   =(y*100)+'%';
         cell.style.width =(w*100)+'%';
@@ -615,7 +598,6 @@ function vlsmRender(animIds=[]){
         cell.style.borderRight =`1px solid ${hexToRgba(color,0.35)}`;
         cell.style.borderBottom=`1px solid ${hexToRgba(color,0.35)}`;
 
-        // Touch/hover feedback
         cell.addEventListener('touchstart',()=>{
             cell.style.backgroundColor=hexToRgba(color,0.2);
         },{passive:true});
@@ -631,21 +613,16 @@ function vlsmRender(animIds=[]){
             cell.style.boxShadow='none';
         });
 
-        // Content
-        const inner=document.createElement('div');
-        inner.className='cell-inner';
-
+        // Appending CIDR badge directly to absolute position bounds within cell
         const cidrEl=document.createElement('div');
         cidrEl.className='cell-cidr';
         cidrEl.style.color=color;
-        cidrEl.style.textShadow=`0 0 18px ${hexToRgba(color,0.75)}`;
+        cidrEl.style.textShadow=`0 0 12px ${hexToRgba(color,0.8)}, 0 0 24px ${hexToRgba(color,0.4)}`;
         cidrEl.textContent=`/${node.prefix}`;
-        inner.appendChild(cidrEl);
+        cell.appendChild(cidrEl);
 
-        const sep=document.createElement('div');
-        sep.className='cell-sep';
-        sep.style.background=color;
-        inner.appendChild(sep);
+        const inner=document.createElement('div');
+        inner.className='cell-inner';
 
         const infoEl=document.createElement('div');
         infoEl.className='cell-info';
@@ -667,10 +644,10 @@ function vlsmRender(animIds=[]){
         hint.className='split-hint';
         hint.style.color=color;
         hint.textContent='TAP ÷';
+        
         cell.appendChild(hint);
         cell.appendChild(inner);
 
-        // Split on click/tap
         cell.addEventListener('click',()=>{
             if(node.prefix>=30){showToast('⚠  /30 is the minimum — only 4 IPs (2 usable)');return;}
             const dir=(node.prefix-vlsmStartPrefix)%2===0?'h':'v';
@@ -687,7 +664,6 @@ function vlsmRender(animIds=[]){
         vlsmCanvas.appendChild(cell);
     });
 
-    // Scale fonts after paint
     requestAnimationFrame(()=>{
         scaleAllCells();
         if(typeof ResizeObserver!=='undefined'){

@@ -12,7 +12,7 @@
             --surface2: #0d1f38;
             --border:   #1a3a5c;
             --text:     #c8d8f0;
-            --muted:    #4a6a8a;
+            --muted:    #94a3b8; /* Increased brightness for WCAG contrast compliance */
             --accent:   #00e5ff;
             --hot:      #ff3a6e;
             --green:    #2dffb3;
@@ -51,12 +51,12 @@
         .site-header { text-align:center; margin-bottom:18px; }
         .site-title {
             font-family:'Orbitron',monospace;
-            font-size:clamp(1.3rem,6vw,2.8rem); font-weight:900; letter-spacing:0.08em;
+            font-size:clamp(1.5rem,6vw,2.8rem); font-weight:900; letter-spacing:0.08em;
             background:linear-gradient(135deg,#00e5ff 0%,#7b61ff 50%,#ff3a6e 100%);
             -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
             line-height:1.1; margin-bottom:4px;
         }
-        .site-sub { color:var(--muted); font-size:clamp(0.6rem,2.5vw,0.8rem); letter-spacing:0.08em; }
+        .site-sub { color:var(--muted); font-size:clamp(0.75rem,2.5vw,0.9rem); letter-spacing:0.08em; }
 
         /* ── Tabs ── */
         .tab-nav {
@@ -65,7 +65,7 @@
         }
         .tab-btn {
             flex:1; font-family:'Orbitron',monospace;
-            font-size:clamp(0.55rem,2.5vw,0.75rem); font-weight:700; letter-spacing:0.06em;
+            font-size:clamp(0.75rem,2.5vw,0.85rem); font-weight:700; letter-spacing:0.06em;
             text-transform:uppercase; padding:15px 8px; min-height:52px;
             border:none; background:transparent; color:var(--muted); cursor:pointer;
             transition:all 0.25s; position:relative; text-align:center;
@@ -90,8 +90,8 @@
             border-radius:10px; padding:14px 16px; margin-bottom:12px;
         }
         .ctrl-label {
-            font-size:0.62rem; letter-spacing:0.14em; color:var(--muted);
-            text-transform:uppercase; margin-bottom:8px; display:block;
+            font-size:0.75rem; letter-spacing:0.14em; color:var(--muted);
+            text-transform:uppercase; margin-bottom:8px; display:block; font-weight: bold;
         }
         .flex-row { display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; }
         @media(max-width:580px){ .flex-row { flex-direction:column; align-items:stretch; } }
@@ -99,7 +99,7 @@
 
         .net-row { display:flex; gap:4px; align-items:center; }
         .net-input {
-            font-family:'Share Tech Mono',monospace; font-size:1rem;
+            font-family:'Share Tech Mono',monospace; font-size:1.1rem;
             background:#060d1a; border:1px solid var(--border); border-radius:6px;
             color:var(--text); padding:10px 2px; outline:none; flex:1; min-width:0;
             text-align:center; min-height:44px; transition:border-color 0.2s,box-shadow 0.2s;
@@ -123,12 +123,12 @@
             background:var(--accent); border:none; cursor:pointer;
         }
         .tick-row { display:flex; justify-content:space-between; margin-top:8px; padding:0 2px; }
-        .tick { font-size:0.58rem; color:var(--muted); opacity:0.5; }
+        .tick { font-size:0.75rem; color:var(--muted); opacity:0.9; }
 
         .btn-group { display:flex; gap:10px; }
         @media(max-width:580px){ .btn-group { justify-content:center; } }
         .btn {
-            font-family:'Orbitron',monospace; font-size:0.68rem; font-weight:700;
+            font-family:'Orbitron',monospace; font-size:0.75rem; font-weight:700;
             letter-spacing:0.08em; text-transform:uppercase; padding:12px 20px;
             min-height:44px; border:none; border-radius:6px; cursor:pointer; transition:all 0.2s; flex:1;
         }
@@ -141,26 +141,26 @@
             background:var(--surface2); border:1px solid var(--border); border-radius:8px;
             padding:12px 16px; margin-bottom:10px;
             display:flex; flex-wrap:wrap; gap:10px 20px; align-items:center; justify-content:center;
-            font-size:0.72rem; color:var(--muted);
+            font-size:0.85rem; color:var(--muted);
         }
         .info-strip .addr {
-            font-family:'Orbitron',monospace; font-size:clamp(1rem,3.5vw,1.6rem); font-weight:700;
+            font-family:'Orbitron',monospace; font-size:clamp(1.2rem,3.5vw,1.6rem); font-weight:700;
             color:var(--accent); text-shadow:0 0 12px rgba(0,229,255,0.5);
             width:100%; text-align:center;
         }
         @media(min-width:480px){ .info-strip .addr { width:auto; } }
-        .info-strip .detail span { color:var(--text); font-weight:bold; font-size:0.85rem; }
+        .info-strip .detail span { color:var(--text); font-weight:bold; }
 
-        .legend { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; justify-content:center; }
-        .legend-item { display:flex; align-items:center; gap:5px; font-size:0.66rem; color:var(--muted); }
-        .legend-dot { width:9px; height:9px; border-radius:2px; flex-shrink:0; }
+        .legend { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; justify-content:center; }
+        .legend-item { display:flex; align-items:center; gap:5px; font-size:0.75rem; color:var(--muted); font-weight: bold; }
+        .legend-dot { width:12px; height:12px; border-radius:2px; flex-shrink:0; }
 
         .chips { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
         .chip {
             background:var(--surface); border:1px solid var(--border); border-radius:4px;
-            padding:6px 12px; font-size:0.68rem; color:var(--muted); letter-spacing:0.04em;
+            padding:6px 12px; font-size:0.75rem; color:var(--muted); letter-spacing:0.04em; font-weight: bold;
         }
-        .chip strong { color:var(--text); font-weight:normal; }
+        .chip strong { color:var(--text); font-weight:bold; }
 
         /* ══════════════════════════════════════════════════════════════════
            VLSM CANVAS
@@ -187,9 +187,6 @@
         .cell {
             position: absolute;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
             overflow: hidden;
             transition: background-color 0.15s, box-shadow 0.15s;
@@ -198,52 +195,56 @@
         .cell:active { filter: brightness(1.3); }
 
         .split-hint {
-            position: absolute; bottom: 4px; right: 5px;
-            font-size: 9px; font-family: 'Share Tech Mono', monospace;
+            position: absolute; bottom: 4px; left: 5px;
+            font-size: 12px; font-family: 'Share Tech Mono', monospace; font-weight: bold;
             opacity: 0; transition: opacity 0.2s;
             pointer-events: none; white-space: nowrap; letter-spacing: 0.04em;
             z-index: 5;
         }
-        .cell:hover .split-hint { opacity: 0.55; }
+        .cell:hover .split-hint { opacity: 0.8; }
 
         .cell-inner {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 4%; pointer-events: none; overflow: hidden; text-align: center;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .cell-corner {
+            position: absolute; 
+            display: flex; 
+            flex-direction: column; 
+            max-width: 48%;
+            z-index: 2;
+        }
+        .top-left { top: 4%; left: 4%; align-items: flex-start; text-align: left; }
+        .top-right { top: 4%; right: 4%; align-items: flex-end; text-align: right; }
+        .bottom-right { bottom: 4%; right: 4%; align-items: flex-end; text-align: right; }
+        
+        .cell-center {
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            display: flex; flex-direction: column; align-items: center; 
+            width: 88%; text-align: center;
             z-index: 1;
         }
 
-        /* Absolutely positioned in top right corner */
-        .cell-cidr {
-            position: absolute;
-            top: 4%;
-            right: 4%;
-            font-family: 'Orbitron', monospace;
-            font-weight: 900; 
-            line-height: 1; 
-            white-space: nowrap;
-            z-index: 2;
+        /* Typography classes */
+        .lbl { 
+            opacity: 0.8; letter-spacing: 0.07em; line-height: 1; 
+            white-space: nowrap; margin-bottom: 3px; font-weight: bold;
         }
-
-        .cell-info {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 0;
+        .val { 
+            opacity: 1; font-weight: bold; line-height: 1.1; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; 
         }
-        .cell-info .lbl {
-            opacity: 0.55; letter-spacing: 0.07em;
-            margin-top: 0.4em; line-height: 1; white-space: nowrap;
+        .dim { 
+            opacity: 0.8; margin-top: 0.6em; white-space: nowrap; 
+            overflow: hidden; text-overflow: ellipsis; max-width: 100%; font-weight: bold;
         }
-        .cell-info .val {
-            opacity: 1; font-weight: bold; line-height: 1.1;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            width: 100%; text-align: center;
-        }
-        .cell-info .dim {
-            opacity: 0.4; margin-top: 0.6em;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            width: 100%; text-align: center;
+        .cidr { 
+            font-family: 'Orbitron', monospace; font-weight: 900; line-height: 1; 
+            margin-bottom: 0;
         }
 
         @keyframes splitIn {
@@ -267,12 +268,12 @@
             padding:14px 10px 10px; margin-bottom:12px; overflow-x:auto;
             -webkit-overflow-scrolling:touch;
         }
-        .strip-sublabel { font-size:0.62rem; letter-spacing:0.1em; color:var(--muted); margin-bottom:8px; }
+        .strip-sublabel { font-size:0.75rem; letter-spacing:0.1em; color:var(--muted); margin-bottom:8px; font-weight: bold; }
         .bits-strip { display:flex; gap:3px; align-items:center; min-width:max-content; margin:0 auto; }
         .strip-bit {
             width:20px; height:28px; border-radius:3px;
             display:flex; align-items:center; justify-content:center;
-            font-size:0.72rem; font-weight:bold;
+            font-size:0.8rem; font-weight:bold;
             transition:background 0.12s,box-shadow 0.12s,color 0.12s; flex-shrink:0;
         }
         .strip-bit.on      { background:rgba(45,255,179,0.15);  color:var(--green); box-shadow:0 0 8px var(--green),0 0 16px rgba(45,255,179,0.35); }
@@ -291,32 +292,32 @@
         }
         .octet-card.interesting { border-color:var(--hot); box-shadow:0 0 16px rgba(255,58,110,0.15),inset 0 0 20px rgba(255,58,110,0.05); }
         .octet-card.full-one    { border-color:var(--green); box-shadow:0 0 12px rgba(45,255,179,0.15),inset 0 0 16px rgba(45,255,179,0.04); }
-        .octet-number { font-size:0.58rem; letter-spacing:0.12em; color:var(--muted); margin-bottom:7px; }
+        .octet-number { font-size:0.75rem; letter-spacing:0.12em; color:var(--muted); margin-bottom:7px; font-weight: bold; }
         .octet-bits { display:flex; justify-content:center; gap:2px; margin-bottom:7px; flex-wrap:wrap; }
         .obit {
             width:16px; height:20px; border-radius:2px;
             display:flex; align-items:center; justify-content:center;
-            font-size:0.65rem; font-weight:bold; transition:all 0.12s;
+            font-size:0.75rem; font-weight:bold; transition:all 0.12s;
         }
         .obit.on      { background:rgba(45,255,179,0.15); color:var(--green); box-shadow:0 0 5px rgba(45,255,179,0.5); }
         .obit.off     { background:rgba(26,58,92,0.4);    color:var(--muted); }
         .obit.hot-on  { background:rgba(255,58,110,0.18); color:var(--hot);   box-shadow:0 0 5px rgba(255,58,110,0.5); }
         .obit.hot-off { background:rgba(255,58,110,0.05); color:rgba(255,58,110,0.3); }
         .octet-decimal {
-            font-family:'Orbitron',monospace; font-size:clamp(1rem,4vw,1.8rem);
+            font-family:'Orbitron',monospace; font-size:clamp(1.2rem,4vw,1.8rem);
             font-weight:900; line-height:1; margin:5px 0 4px; transition:color 0.2s,text-shadow 0.2s;
         }
         .octet-card.interesting .octet-decimal { color:var(--hot);   text-shadow:0 0 12px var(--hot); }
         .octet-card.full-one    .octet-decimal { color:var(--green); text-shadow:0 0 12px var(--green); }
         .octet-card:not(.interesting):not(.full-one) .octet-decimal { color:var(--text); }
-        .octet-math { font-size:0.58rem; color:var(--muted); min-height:14px; line-height:1.4; }
-        .octet-card.interesting .octet-math { color:rgba(255,58,110,0.7); }
-        .octet-card.full-one    .octet-math { color:rgba(45,255,179,0.6); }
+        .octet-math { font-size:0.75rem; color:var(--muted); min-height:16px; line-height:1.4; font-weight: bold; }
+        .octet-card.interesting .octet-math { color:rgba(255,58,110,0.8); }
+        .octet-card.full-one    .octet-math { color:rgba(45,255,179,0.8); }
         .interesting-badge {
-            position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+            position:absolute; top:-12px; left:50%; transform:translateX(-50%);
             background:var(--hot); color:#fff; font-family:'Orbitron',monospace;
-            font-size:0.48rem; letter-spacing:0.08em; font-weight:700;
-            padding:2px 8px; border-radius:10px; white-space:nowrap;
+            font-size:0.7rem; letter-spacing:0.08em; font-weight:700;
+            padding:3px 10px; border-radius:10px; white-space:nowrap;
             box-shadow:0 0 10px rgba(255,58,110,0.5);
         }
 
@@ -325,24 +326,24 @@
             padding:18px 14px; text-align:center;
             box-shadow:0 0 24px rgba(45,255,179,0.08),inset 0 0 24px rgba(45,255,179,0.03);
         }
-        .mask-label { font-size:0.64rem; letter-spacing:0.15em; color:var(--muted); margin-bottom:6px; }
+        .mask-label { font-size:0.75rem; letter-spacing:0.15em; color:var(--muted); margin-bottom:6px; font-weight: bold; }
         .mask-value {
-            font-family:'Orbitron',monospace; font-size:clamp(1.2rem,5vw,2.2rem); font-weight:900;
+            font-family:'Orbitron',monospace; font-size:clamp(1.4rem,5vw,2.2rem); font-weight:900;
             color:var(--green); text-shadow:0 0 14px var(--green),0 0 28px rgba(45,255,179,0.3); word-break:break-all;
         }
         .mask-hosts { margin-top:10px; color:var(--muted); }
         .mask-hosts .host-count {
-            font-family:'Orbitron',monospace; font-size:clamp(1rem,3.5vw,1.4rem); font-weight:700;
+            font-family:'Orbitron',monospace; font-size:clamp(1.1rem,3.5vw,1.4rem); font-weight:700;
             color:var(--green); text-shadow:0 0 10px rgba(45,255,179,0.5); display:block; margin-bottom:3px;
         }
-        .mask-hosts .mask-line { font-size:0.76rem; display:block; }
-        .mask-hosts .mask-line span { color:var(--text); }
+        .mask-hosts .mask-line { font-size:0.85rem; display:block; }
+        .mask-hosts .mask-line span { color:var(--text); font-weight: bold; }
 
         #toast {
             position:fixed; bottom:20px; left:50%;
             transform:translateX(-50%) translateY(20px);
             background:#0a1628; border:1px solid var(--hot); color:var(--hot);
-            padding:10px 20px; border-radius:6px; font-size:0.76rem;
+            padding:10px 20px; border-radius:6px; font-size:0.85rem; font-weight: bold;
             opacity:0; transition:all 0.3s; pointer-events:none;
             z-index:200; box-shadow:0 0 20px rgba(255,58,110,0.3);
             max-width:90vw; text-align:center; white-space:nowrap;
@@ -356,95 +357,97 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="site-header">
-        <div class="site-title">SUBNET TOOLKIT</div>
-        <div class="site-sub">VLSM BOX VISUALIZER &nbsp;·&nbsp; CIDR SUBNET MASK REFERENCE</div>
-    </div>
+    <header class="site-header">
+        <h1 class="site-title">SUBNET TOOLKIT</h1>
+        <p class="site-sub">VLSM BOX VISUALIZER &nbsp;·&nbsp; CIDR SUBNET MASK REFERENCE</p>
+    </header>
 
-    <div class="tab-nav">
+    <nav class="tab-nav" aria-label="Main Tool Navigation">
         <button class="tab-btn active" data-tab="vlsm">▦ VLSM BOX METHOD</button>
         <div class="tab-divider"></div>
         <button class="tab-btn" data-tab="cidr">⬛ CIDR → SUBNET MASK</button>
-    </div>
+    </nav>
 
-    <div class="tab-panel active" id="panel-vlsm">
-        <div class="panel-section">
-            <div class="flex-row">
-                <div>
-                    <span class="ctrl-label">Network Address</span>
-                    <div class="net-row">
-                        <input class="net-input" id="oct1" type="tel" inputmode="numeric" maxlength="3" value="10">
-                        <span class="net-sep">.</span>
-                        <input class="net-input" id="oct2" type="tel" inputmode="numeric" maxlength="3" value="0">
-                        <span class="net-sep">.</span>
-                        <input class="net-input" id="oct3" type="tel" inputmode="numeric" maxlength="3" value="0">
-                        <span class="net-sep">.</span>
-                        <input class="net-input" id="oct4" type="tel" inputmode="numeric" maxlength="3" value="0">
+    <main>
+        <div class="tab-panel active" id="panel-vlsm">
+            <div class="panel-section">
+                <div class="flex-row">
+                    <div>
+                        <div class="ctrl-label" id="label-network-address">Network Address</div>
+                        <div class="net-row">
+                            <input class="net-input" id="oct1" type="tel" inputmode="numeric" maxlength="3" value="10" aria-label="Network Address Octet 1">
+                            <span class="net-sep">.</span>
+                            <input class="net-input" id="oct2" type="tel" inputmode="numeric" maxlength="3" value="0" aria-label="Network Address Octet 2">
+                            <span class="net-sep">.</span>
+                            <input class="net-input" id="oct3" type="tel" inputmode="numeric" maxlength="3" value="0" aria-label="Network Address Octet 3">
+                            <span class="net-sep">.</span>
+                            <input class="net-input" id="oct4" type="tel" inputmode="numeric" maxlength="3" value="0" aria-label="Network Address Octet 4">
+                        </div>
                     </div>
-                </div>
-                <div class="grow">
-                    <div class="slider-header">
-                        <span class="ctrl-label" style="margin:0">Starting Prefix</span>
-                        <span class="slider-val" id="vlsmPrefixDisplay">/24</span>
+                    <div class="grow">
+                        <div class="slider-header">
+                            <label for="vlsmPrefixSlider" class="ctrl-label" style="margin:0">Starting Prefix</label>
+                            <span class="slider-val" id="vlsmPrefixDisplay">/24</span>
+                        </div>
+                        <input type="range" id="vlsmPrefixSlider" min="1" max="30" value="24" step="1">
+                        <div class="tick-row">
+                            <span class="tick">/1</span><span class="tick">/8</span>
+                            <span class="tick">/16</span><span class="tick">/24</span><span class="tick">/30</span>
+                        </div>
                     </div>
-                    <input type="range" id="vlsmPrefixSlider" min="1" max="30" value="24" step="1">
-                    <div class="tick-row">
-                        <span class="tick">/1</span><span class="tick">/8</span>
-                        <span class="tick">/16</span><span class="tick">/24</span><span class="tick">/30</span>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-cyan" id="vlsmApplyBtn">APPLY</button>
-                    <button class="btn btn-red"  id="vlsmResetBtn">RESET</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="info-strip">
-            <div class="addr" id="vlsmBadgeAddr">10.0.0.0/24</div>
-            <div class="detail">TOTAL IPs: <span id="vlsmBadgeTotal">256</span></div>
-            <div class="detail">USABLE: <span id="vlsmBadgeUsable">254</span></div>
-            <div class="detail">MASK: <span id="vlsmBadgeMask">255.255.255.0</span></div>
-        </div>
-
-        <div class="legend" id="vlsmLegend"></div>
-
-        <div id="vlsmCanvasWrap">
-            <div id="vlsmCanvas"></div>
-        </div>
-
-        <div class="chips">
-            <div class="chip">SPLITS: <strong id="vlsmSplitCount">0</strong></div>
-            <div class="chip">SUBNETS: <strong id="vlsmSubnetCount">1</strong></div>
-            <div class="chip">TAP A BLOCK TO HALVE IT</div>
-        </div>
-    </div>
-
-    <div class="tab-panel" id="panel-cidr">
-        <div class="panel-section">
-            <div class="cidr-slider-row">
-                <span class="ctrl-label" style="margin:0;flex-shrink:0">PREFIX LENGTH</span>
-                <div class="cidr-badge-big" id="cidrBadge">/24</div>
-                <div class="cidr-slider-wrap">
-                    <input type="range" id="cidrSlider" min="0" max="32" value="24">
-                    <div class="tick-row">
-                        <span class="tick">/0</span><span class="tick">/8</span>
-                        <span class="tick">/16</span><span class="tick">/24</span><span class="tick">/32</span>
+                    <div class="btn-group">
+                        <button class="btn btn-cyan" id="vlsmApplyBtn">APPLY</button>
+                        <button class="btn btn-red"  id="vlsmResetBtn">RESET</button>
                     </div>
                 </div>
             </div>
+
+            <div class="info-strip">
+                <div class="addr" id="vlsmBadgeAddr">10.0.0.0/24</div>
+                <div class="detail">TOTAL IPs: <span id="vlsmBadgeTotal">256</span></div>
+                <div class="detail">USABLE: <span id="vlsmBadgeUsable">254</span></div>
+                <div class="detail">MASK: <span id="vlsmBadgeMask">255.255.255.0</span></div>
+            </div>
+
+            <div class="legend" id="vlsmLegend"></div>
+
+            <div id="vlsmCanvasWrap">
+                <div id="vlsmCanvas"></div>
+            </div>
+
+            <div class="chips">
+                <div class="chip">SPLITS: <strong id="vlsmSplitCount">0</strong></div>
+                <div class="chip">SUBNETS: <strong id="vlsmSubnetCount">1</strong></div>
+                <div class="chip">TAP A BLOCK TO HALVE IT</div>
+            </div>
         </div>
-        <div class="bits-strip-wrapper">
-            <div class="strip-sublabel">32-BIT MASK REPRESENTATION</div>
-            <div class="bits-strip" id="bitsStrip"></div>
+
+        <div class="tab-panel" id="panel-cidr">
+            <div class="panel-section">
+                <div class="cidr-slider-row">
+                    <label for="cidrSlider" class="ctrl-label" style="margin:0;flex-shrink:0">PREFIX LENGTH</label>
+                    <div class="cidr-badge-big" id="cidrBadge">/24</div>
+                    <div class="cidr-slider-wrap">
+                        <input type="range" id="cidrSlider" min="0" max="32" value="24">
+                        <div class="tick-row">
+                            <span class="tick">/0</span><span class="tick">/8</span>
+                            <span class="tick">/16</span><span class="tick">/24</span><span class="tick">/32</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bits-strip-wrapper">
+                <div class="strip-sublabel">32-BIT MASK REPRESENTATION</div>
+                <div class="bits-strip" id="bitsStrip"></div>
+            </div>
+            <div class="octets-grid" id="octetsGrid"></div>
+            <div class="mask-display">
+                <div class="mask-label">SUBNET MASK</div>
+                <div class="mask-value" id="maskValue">255.255.255.0</div>
+                <div class="mask-hosts" id="maskHosts"></div>
+            </div>
         </div>
-        <div class="octets-grid" id="octetsGrid"></div>
-        <div class="mask-display">
-            <div class="mask-label">SUBNET MASK</div>
-            <div class="mask-value" id="maskValue">255.255.255.0</div>
-            <div class="mask-hosts" id="maskHosts"></div>
-        </div>
-    </div>
+    </main>
 </div>
 <div id="toast"></div>
 
@@ -532,15 +535,17 @@ function computeRects(node, x,y,w,h, depth, out){
     }
 }
 
-/* ── Adjusted Font scaling logic favoring Network Info over CIDR ───────── */
+/* ── Accessible Font scaling logic ───────── */
 function fontSizes(wPx, hPx){
     const s = Math.min(wPx, hPx);
     return {
-        cidr:    Math.max(10, Math.min(s * 0.16, 36)), // Smaller, corner badge
-        info:    Math.max(8,  Math.min(s * 0.14, 26)), // Larger main values
-        lbl:     Math.max(5,  Math.min(s * 0.07, 12)), // Larger labels
-        showInfo: s >= 45,
-        showLbls: s >= 70
+        // Enforce 12px minimums for WCAG accessibility sizing
+        cidr:    Math.max(14, Math.min(s * 0.16, 42)),
+        val:     Math.max(12, Math.min(s * 0.08, 22)),
+        lbl:     Math.max(12, Math.min(s * 0.045, 12)), 
+        dim:     Math.max(12, Math.min(s * 0.055, 14)),
+        showInfo: s >= 80,
+        showLbls: s >= 120
     };
 }
 
@@ -551,22 +556,21 @@ function scaleAllCells(){
         const w=cell.offsetWidth, h=cell.offsetHeight;
         if(!w||!h) return;
         const f=fontSizes(w,h);
-        const cidrEl=cell.querySelector('.cell-cidr');
-        const infoEl=cell.querySelector('.cell-info');
         
-        if(cidrEl) cidrEl.style.fontSize=f.cidr+'px';
-        if(infoEl){
-            infoEl.style.display=f.showInfo?'flex':'none';
-            if(f.showInfo){
-                infoEl.style.fontSize=f.info+'px';
-                infoEl.querySelectorAll('.lbl').forEach(el=>{
-                    el.style.fontSize=f.lbl+'px';
-                    el.style.display=f.showLbls?'block':'none';
-                });
-                infoEl.querySelectorAll('.val').forEach(el=>el.style.fontSize=f.info+'px');
-                infoEl.querySelectorAll('.dim').forEach(el=>el.style.fontSize=f.lbl+'px');
-            }
-        }
+        const cidrEl = cell.querySelector('.cidr');
+        if(cidrEl) cidrEl.style.fontSize = f.cidr + 'px';
+        
+        cell.querySelectorAll('.val').forEach(el => el.style.fontSize = f.val + 'px');
+        cell.querySelectorAll('.dim').forEach(el => el.style.fontSize = f.dim + 'px');
+        
+        cell.querySelectorAll('.lbl').forEach(el => {
+            el.style.fontSize = f.lbl + 'px';
+            el.style.display = f.showLbls ? 'block' : 'none';
+        });
+        
+        cell.querySelectorAll('.cell-corner:not(.top-right), .cell-center').forEach(el => {
+            el.style.display = f.showInfo ? 'flex' : 'none';
+        });
     });
 }
 
@@ -595,8 +599,9 @@ function vlsmRender(animIds=[]){
         cell.style.height=(h*100)+'%';
 
         cell.style.backgroundColor=hexToRgba(color,0.07);
-        cell.style.borderRight =`1px solid ${hexToRgba(color,0.35)}`;
-        cell.style.borderBottom=`1px solid ${hexToRgba(color,0.35)}`;
+        cell.style.boxShadow = `inset 0 0 0 1px ${hexToRgba(color, 0.2)}`;
+        cell.style.borderRight =`2px solid ${hexToRgba(color,0.4)}`;
+        cell.style.borderBottom=`2px solid ${hexToRgba(color,0.4)}`;
 
         cell.addEventListener('touchstart',()=>{
             cell.style.backgroundColor=hexToRgba(color,0.2);
@@ -610,35 +615,31 @@ function vlsmRender(animIds=[]){
         });
         cell.addEventListener('mouseleave',()=>{
             cell.style.backgroundColor=hexToRgba(color,0.07);
-            cell.style.boxShadow='none';
+            cell.style.boxShadow=`inset 0 0 0 1px ${hexToRgba(color, 0.2)}`;
         });
-
-        // Appending CIDR badge directly to absolute position bounds within cell
-        const cidrEl=document.createElement('div');
-        cidrEl.className='cell-cidr';
-        cidrEl.style.color=color;
-        cidrEl.style.textShadow=`0 0 12px ${hexToRgba(color,0.8)}, 0 0 24px ${hexToRgba(color,0.4)}`;
-        cidrEl.textContent=`/${node.prefix}`;
-        cell.appendChild(cidrEl);
 
         const inner=document.createElement('div');
         inner.className='cell-inner';
-
-        const infoEl=document.createElement('div');
-        infoEl.className='cell-info';
-        infoEl.style.color=color;
-        infoEl.innerHTML=`
-            <span class="lbl">NETWORK</span>
-            <span class="val">${info.network}</span>
-            <span class="lbl">FIRST HOST</span>
-            <span class="val">${info.firstH}</span>
-            <span class="lbl">LAST HOST</span>
-            <span class="val">${info.lastH}</span>
-            <span class="lbl">BROADCAST</span>
-            <span class="val">${info.bcast}</span>
-            <span class="dim">${exactCount(info.total)} IPs · ${exactCount(info.usable)} usable</span>
+        inner.style.color=color;
+        
+        inner.innerHTML=`
+            <div class="cell-corner top-left">
+                <span class="lbl">NETWORK</span>
+                <span class="val">${info.network}</span>
+            </div>
+            <div class="cell-corner top-right cidr" style="text-shadow:0 0 14px ${hexToRgba(color,0.8)}, 0 0 28px ${hexToRgba(color,0.4)}">
+                /${node.prefix}
+            </div>
+            <div class="cell-center">
+                <span class="lbl">USABLE HOST RANGE</span>
+                <span class="val">${info.firstH} – ${info.lastH}</span>
+                <span class="dim">${exactCount(info.total)} IPs · ${exactCount(info.usable)} usable</span>
+            </div>
+            <div class="cell-corner bottom-right">
+                <span class="lbl">BROADCAST</span>
+                <span class="val">${info.bcast}</span>
+            </div>
         `;
-        inner.appendChild(infoEl);
 
         const hint=document.createElement('div');
         hint.className='split-hint';

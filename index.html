@@ -12,7 +12,7 @@
             --surface2: #0d1f38;
             --border:   #1a3a5c;
             --text:     #c8d8f0;
-            --muted:    #94a3b8; /* Increased brightness for WCAG contrast compliance */
+            --muted:    #94a3b8;
             --accent:   #00e5ff;
             --hot:      #ff3a6e;
             --green:    #2dffb3;
@@ -45,7 +45,8 @@
             pointer-events:none;
         }
 
-        .wrapper { position:relative; z-index:1; width:100%; max-width:980px; }
+        /* ── INCREASED MAX-WIDTH FOR LARGER SUBNETS ── */
+        .wrapper { position:relative; z-index:1; width:100%; max-width:1400px; }
 
         /* ── Header ── */
         .site-header { text-align:center; margin-bottom:18px; }
@@ -122,8 +123,13 @@
             width:28px; height:28px; border-radius:50%;
             background:var(--accent); border:none; cursor:pointer;
         }
+        
         .tick-row { display:flex; justify-content:space-between; margin-top:8px; padding:0 2px; }
         .tick { font-size:0.75rem; color:var(--muted); opacity:0.9; }
+
+        /* Exactly aligned VLSM tick row using absolute positioning */
+        .vlsm-tick-row { position: relative; height: 16px; margin-top: 8px; width: 100%; }
+        .vlsm-tick-row .tick { position: absolute; top: 0; font-size: 0.75rem; color: var(--muted); opacity: 0.9; }
 
         .btn-group { display:flex; gap:10px; }
         @media(max-width:580px){ .btn-group { justify-content:center; } }
@@ -167,7 +173,7 @@
         ══════════════════════════════════════════════════════════════════ */
         #vlsmCanvasWrap {
             width: 100%;
-            padding-top: 100%;
+            aspect-ratio: 1 / 1; /* Aspect ratio preserves square structure seamlessly */
             position: relative;
             border: 2px solid var(--border);
             border-radius: 8px;
@@ -229,18 +235,18 @@
             z-index: 1;
         }
 
-        /* Typography classes */
+        /* Responsive, wrapping typography classes */
         .lbl { 
             opacity: 0.8; letter-spacing: 0.07em; line-height: 1; 
             white-space: nowrap; margin-bottom: 3px; font-weight: bold;
         }
         .val { 
-            opacity: 1; font-weight: bold; line-height: 1.1; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; 
+            opacity: 1; font-weight: bold; line-height: 1.2; 
+            white-space: normal; word-wrap: break-word; overflow: hidden; max-width: 100%; 
         }
         .dim { 
-            opacity: 0.8; margin-top: 0.6em; white-space: nowrap; 
-            overflow: hidden; text-overflow: ellipsis; max-width: 100%; font-weight: bold;
+            opacity: 0.8; margin-top: 0.6em; white-space: normal; 
+            overflow: hidden; max-width: 100%; font-weight: bold; line-height: 1.1;
         }
         .cidr { 
             font-family: 'Orbitron', monospace; font-weight: 900; line-height: 1; 
@@ -369,6 +375,7 @@
     </nav>
 
     <main>
+        <!-- ══ VLSM ══ -->
         <div class="tab-panel active" id="panel-vlsm">
             <div class="panel-section">
                 <div class="flex-row">
@@ -390,9 +397,13 @@
                             <span class="slider-val" id="vlsmPrefixDisplay">/24</span>
                         </div>
                         <input type="range" id="vlsmPrefixSlider" min="1" max="30" value="24" step="1">
-                        <div class="tick-row">
-                            <span class="tick">/1</span><span class="tick">/8</span>
-                            <span class="tick">/16</span><span class="tick">/24</span><span class="tick">/30</span>
+                        <!-- Updated Tick Row logic with precise mathematical percentages -->
+                        <div class="vlsm-tick-row">
+                            <span class="tick" style="left:0%; transform:translateX(0%);">/1</span>
+                            <span class="tick" style="left:24.13%; transform:translateX(-50%);">/8</span>
+                            <span class="tick" style="left:51.72%; transform:translateX(-50%);">/16</span>
+                            <span class="tick" style="left:79.31%; transform:translateX(-50%);">/24</span>
+                            <span class="tick" style="left:100%; transform:translateX(-100%);">/30</span>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -422,6 +433,7 @@
             </div>
         </div>
 
+        <!-- ══ CIDR ══ -->
         <div class="tab-panel" id="panel-cidr">
             <div class="panel-section">
                 <div class="cidr-slider-row">
@@ -535,17 +547,19 @@ function computeRects(node, x,y,w,h, depth, out){
     }
 }
 
-/* ── Accessible Font scaling logic ───────── */
+/* ── Font & Element Visibility Scaling ───────── */
 function fontSizes(wPx, hPx){
     const s = Math.min(wPx, hPx);
     return {
-        // Enforce 12px minimums for WCAG accessibility sizing
-        cidr:    Math.max(14, Math.min(s * 0.16, 42)),
-        val:     Math.max(12, Math.min(s * 0.08, 22)),
-        lbl:     Math.max(12, Math.min(s * 0.045, 12)), 
-        dim:     Math.max(12, Math.min(s * 0.055, 14)),
-        showInfo: s >= 80,
-        showLbls: s >= 120
+        cidr:     Math.max(14, Math.min(s * 0.18, 48)),
+        // Scale `.val` largely by width to avoid wrap truncations on IPs 
+        val:      Math.max(8,  Math.min(s * 0.1, wPx * 0.08, 22)),
+        lbl:      Math.max(6,  Math.min(s * 0.05, wPx * 0.06, 12)), 
+        dim:      Math.max(7,  Math.min(s * 0.06, wPx * 0.07, 14)),
+        // Progressively hide headers when the block runs out of room
+        showInfo: s >= 40,
+        showLbls: s >= 100 && wPx >= 120,
+        showDim:  s >= 70 && hPx >= 80
     };
 }
 
@@ -561,13 +575,18 @@ function scaleAllCells(){
         if(cidrEl) cidrEl.style.fontSize = f.cidr + 'px';
         
         cell.querySelectorAll('.val').forEach(el => el.style.fontSize = f.val + 'px');
-        cell.querySelectorAll('.dim').forEach(el => el.style.fontSize = f.dim + 'px');
+        
+        cell.querySelectorAll('.dim').forEach(el => {
+            el.style.fontSize = f.dim + 'px';
+            el.style.display = f.showDim ? 'block' : 'none';
+        });
         
         cell.querySelectorAll('.lbl').forEach(el => {
             el.style.fontSize = f.lbl + 'px';
             el.style.display = f.showLbls ? 'block' : 'none';
         });
         
+        // Hide info entirely if box is extremely small
         cell.querySelectorAll('.cell-corner:not(.top-right), .cell-center').forEach(el => {
             el.style.display = f.showInfo ? 'flex' : 'none';
         });
@@ -632,7 +651,7 @@ function vlsmRender(animIds=[]){
             </div>
             <div class="cell-center">
                 <span class="lbl">USABLE HOST RANGE</span>
-                <span class="val">${info.firstH} – ${info.lastH}</span>
+                <span class="val">${info.firstH} – <br>${info.lastH}</span>
                 <span class="dim">${exactCount(info.total)} IPs · ${exactCount(info.usable)} usable</span>
             </div>
             <div class="cell-corner bottom-right">
